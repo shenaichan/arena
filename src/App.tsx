@@ -45,8 +45,8 @@ function App() {
       </div>
       <div style={{ padding: "20px" }}>
         <ul>
-          {channelData.map((elt, idx) => (
-            <li key={idx}>{elt.title}</li>
+          {channelData.map((elt) => (
+            <li key={elt.id}>{elt.title}</li>
           ))}
         </ul>
       </div>
