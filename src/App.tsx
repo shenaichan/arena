@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 
 import { Channel, Content } from "./types";
 
-const fetchChannelUrl = "http://api.are.na/v2/channels/arena-influences/thumb";
+const fetchChannelUrl = "https://api.are.na/v2/channels/arena-influences/thumb";
 
 function App() {
   const [channelData, setChannelData] = useState<Content[]>([]);
