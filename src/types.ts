@@ -30,7 +30,7 @@ export type Channel = {
 };
 
 export type Contents = {
-  content: Content[];
+  contents: Content[];
 };
 
 export type Content = {
