@@ -14,27 +14,11 @@ const LOAD_MARGIN = 200;
 
 function App() {
   const [blocks, setBlocks] = useState<Content[]>([]);
-  const [currUrl, setCurrUrl] = useState("");
-  const [slug, setSlug] = useState("");
 
-  // const getChannelThumb = async (slug: string) => {
-  //   const url = `https://api.are.na/v2/channels/${slug}/thumb`;
-  //   try {
-  //     const response = await fetch(url);
-  //     if (!response.ok) {
-  //       throw new Error("Network error fetching channel thumb");
-  //       // TODO: Something about auth here
-  //     }
-  //     const json: Channel = await response.json();
-  //     setBlocks(json.contents);
-  //   } catch (err) {
-  //     if (err instanceof Error) {
-  //       console.error(err.message);
-  //     } else {
-  //       throw err;
-  //     }
-  //   }
-  // };
+  // probably want to consolidate this state
+  const [currUrl, setCurrUrl] = useState("");
+  const [urlIsValid, setUrlIsValid] = useState(false);
+  const [slug, setSlug] = useState("");
 
   const getNextPage = async (slug: string) => {
     const url = `https://api.are.na/v2/channels/${slug}/contents`;
@@ -70,12 +54,19 @@ function App() {
   };
 
   const tryUrl = () => {
+    if (!urlIsValid) {
+      console.log(
+        "Shouldn't have gotten here; button should have been disabled"
+      );
+      return;
+    }
     const s = channelUrlIsValid(currUrl);
     if (s) {
       setSlug(s);
       getNextPage(s);
     }
     setCurrUrl("");
+    setUrlIsValid(false);
   };
 
   const fetchMore = (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
@@ -85,6 +76,12 @@ function App() {
     ) {
       getNextPage(slug);
     }
+  };
+
+  const updateUrl = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCurrUrl(e.target.value);
+    const s = channelUrlIsValid(e.target.value);
+    setUrlIsValid(!!s);
   };
 
   return (
@@ -97,7 +94,7 @@ function App() {
       }}
       className={fonts.ah}
     >
-      <Tldraw />
+      <Tldraw persistenceKey="foobar" />
 
       <div style={{ padding: "20px", overflow: "scroll" }} onScroll={fetchMore}>
         <p>Paste the URL of the are.na channel you want to whiteboard here:</p>
@@ -112,9 +109,15 @@ function App() {
             }}
             placeholder="Paste the URL here"
             value={currUrl}
-            onChange={(e) => setCurrUrl(e.target.value)}
+            onChange={updateUrl}
           ></input>
-          <button onClick={tryUrl}>Submit</button>
+          <button
+            style={{ borderRadius: "8px" }}
+            onClick={tryUrl}
+            disabled={!urlIsValid}
+          >
+            Submit
+          </button>
         </div>
         <div>
           {blocks.map((elt) => (
