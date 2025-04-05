@@ -56,29 +56,29 @@ function App() {
     }
   };
 
-  // TODO: fix this later lol
-  const urlIsValid = (url: string) => {
-    return url.length > 0;
+  const channelUrlIsValid = (url: string) => {
+    // https://www.are.na/{user}/{channel}
+    const channelUrlRegex: RegExp =
+      /^https:\/\/www\.are\.na\/([^\/]+)\/([^\/]+)$/;
+
+    const match = url.match(channelUrlRegex);
+
+    if (!match) return null;
+    if (match[1] === "block") return null;
+
+    return match[2]; // channel slug
   };
 
   const tryUrl = () => {
-    if (urlIsValid(currUrl)) {
-      const s = currUrl.split("/").at(-1);
-      // TODO: fix this too whoops
-      if (s) {
-        setSlug(s);
-        getNextPage(s);
-      }
+    const s = channelUrlIsValid(currUrl);
+    if (s) {
+      setSlug(s);
+      getNextPage(s);
     }
     setCurrUrl("");
   };
 
   const fetchMore = (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
-    console.log(
-      e.currentTarget.scrollHeight,
-      e.currentTarget.clientHeight,
-      e.currentTarget.scrollTop
-    );
     if (
       e.currentTarget.scrollHeight <=
       e.currentTarget.clientHeight + e.currentTarget.scrollTop + LOAD_MARGIN
