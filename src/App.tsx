@@ -3,7 +3,7 @@ import "tldraw/tldraw.css";
 
 import { useState } from "react";
 
-import { Channel, Content, Contents } from "./types";
+import { Content, Contents } from "./types";
 
 const PAGE_LENGTH = 20;
 const LOAD_MARGIN = 200;
@@ -13,24 +13,24 @@ function App() {
   const [currUrl, setCurrUrl] = useState("");
   const [slug, setSlug] = useState("");
 
-  const getChannelThumb = async (slug: string) => {
-    const url = `https://api.are.na/v2/channels/${slug}/thumb`;
-    try {
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error("Network error fetching channel thumb");
-        // TODO: Something about auth here
-      }
-      const json: Channel = await response.json();
-      setBlocks(json.contents);
-    } catch (err) {
-      if (err instanceof Error) {
-        console.error(err.message);
-      } else {
-        throw err;
-      }
-    }
-  };
+  // const getChannelThumb = async (slug: string) => {
+  //   const url = `https://api.are.na/v2/channels/${slug}/thumb`;
+  //   try {
+  //     const response = await fetch(url);
+  //     if (!response.ok) {
+  //       throw new Error("Network error fetching channel thumb");
+  //       // TODO: Something about auth here
+  //     }
+  //     const json: Channel = await response.json();
+  //     setBlocks(json.contents);
+  //   } catch (err) {
+  //     if (err instanceof Error) {
+  //       console.error(err.message);
+  //     } else {
+  //       throw err;
+  //     }
+  //   }
+  // };
 
   const getNextPage = async (slug: string) => {
     const url = `https://api.are.na/v2/channels/${slug}/contents`;
