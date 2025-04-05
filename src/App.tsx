@@ -1,9 +1,13 @@
 import { Tldraw } from "tldraw";
 import "tldraw/tldraw.css";
 
+import fonts from "./fonts.module.css";
+
 import { useState } from "react";
 
 import { Content, Contents } from "./types";
+
+// import classnames from "classnames";
 
 const PAGE_LENGTH = 20;
 const LOAD_MARGIN = 200;
@@ -91,6 +95,7 @@ function App() {
         display: "grid",
         gridTemplateColumns: "2fr 1fr",
       }}
+      className={fonts.ah}
     >
       <Tldraw />
 
@@ -114,7 +119,7 @@ function App() {
         <div>
           {blocks.map((elt) => (
             <div key={elt.id}>
-              <h2>{elt.title}</h2>
+              <h2 className={fonts.rhm}>{elt.title}</h2>
               {elt.content && <p>{elt.content}</p>}
               {elt.image && <img src={elt.image.square.url}></img>}
             </div>
