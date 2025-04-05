@@ -3,22 +3,46 @@ import "tldraw/tldraw.css";
 
 import { useState } from "react";
 
-import { Channel, Content } from "./types";
+import { Channel, Content, Contents } from "./types";
 
-// const fetchChannelUrl = "https://api.are.na/v2/channels/arena-influences/thumb";
+const PAGE_LENGTH = 20;
+const LOAD_MARGIN = 200;
 
 function App() {
-  const [channelData, setChannelData] = useState<Content[]>([]);
+  const [blocks, setBlocks] = useState<Content[]>([]);
   const [currUrl, setCurrUrl] = useState("");
+  const [slug, setSlug] = useState("");
 
-  const getDummyData = async (url: string) => {
+  const getChannelThumb = async (slug: string) => {
+    const url = `https://api.are.na/v2/channels/${slug}/thumb`;
     try {
       const response = await fetch(url);
       if (!response.ok) {
-        throw new Error("Network error with fetching channel thumb");
+        throw new Error("Network error fetching channel thumb");
+        // TODO: Something about auth here
       }
       const json: Channel = await response.json();
-      setChannelData(json.contents);
+      setBlocks(json.contents);
+    } catch (err) {
+      if (err instanceof Error) {
+        console.error(err.message);
+      } else {
+        throw err;
+      }
+    }
+  };
+
+  const getNextPage = async (slug: string) => {
+    const url = `https://api.are.na/v2/channels/${slug}/contents`;
+    try {
+      const currPage = Math.floor(blocks.length / PAGE_LENGTH) + 1;
+      const response = await fetch(`${url}?page=${currPage}`);
+      if (!response.ok) {
+        throw new Error("Network error fetching next page");
+        // TODO: Something about auth here
+      }
+      const json: Contents = await response.json();
+      setBlocks([...blocks, ...json.contents]);
     } catch (err) {
       if (err instanceof Error) {
         console.error(err.message);
@@ -35,11 +59,28 @@ function App() {
 
   const tryUrl = () => {
     if (urlIsValid(currUrl)) {
-      const slug = currUrl.split("/").at(-1);
-      const url = `https://api.are.na/v2/channels/${slug}/thumb`;
-      getDummyData(url);
+      const s = currUrl.split("/").at(-1);
+      // TODO: fix this too whoops
+      if (s) {
+        setSlug(s);
+        getNextPage(s);
+      }
     }
     setCurrUrl("");
+  };
+
+  const fetchMore = (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
+    console.log(
+      e.currentTarget.scrollHeight,
+      e.currentTarget.clientHeight,
+      e.currentTarget.scrollTop
+    );
+    if (
+      e.currentTarget.scrollHeight <=
+      e.currentTarget.clientHeight + e.currentTarget.scrollTop + LOAD_MARGIN
+    ) {
+      getNextPage(slug);
+    }
   };
 
   return (
@@ -51,10 +92,9 @@ function App() {
         gridTemplateColumns: "2fr 1fr",
       }}
     >
-      <div style={{}}>
-        <Tldraw />
-      </div>
-      <div style={{ padding: "20px", overflow: "scroll" }}>
+      <Tldraw />
+
+      <div style={{ padding: "20px", overflow: "scroll" }} onScroll={fetchMore}>
         <p>Paste the URL of the are.na channel you want to whiteboard here:</p>
         <div style={{ width: "100%", display: "flex", gap: "10px" }}>
           <input
@@ -71,14 +111,15 @@ function App() {
           ></input>
           <button onClick={tryUrl}>Submit</button>
         </div>
-
-        {channelData.map((elt) => (
-          <div key={elt.id}>
-            <h2>{elt.title}</h2>
-            {elt.content && <p>{elt.content}</p>}
-            {elt.image && <img src={elt.image.square.url}></img>}
-          </div>
-        ))}
+        <div>
+          {blocks.map((elt) => (
+            <div key={elt.id}>
+              <h2>{elt.title}</h2>
+              {elt.content && <p>{elt.content}</p>}
+              {elt.image && <img src={elt.image.square.url}></img>}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

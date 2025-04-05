@@ -29,6 +29,10 @@ export type Channel = {
   class: string;
 };
 
+export type Contents = {
+  content: Content[];
+};
+
 export type Content = {
   title: string;
   updated_at: Date;
