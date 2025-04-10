@@ -3,12 +3,13 @@ import "tldraw/tldraw.css";
 
 import fonts from "./fonts.module.css";
 import base from "./base.module.css";
+import classnames from "classnames";
 
 import { useState } from "react";
 
 import { Content, Contents } from "./types";
 
-import classnames from "classnames";
+import Block from "./Block";
 
 const PAGE_LENGTH = 20;
 const LOAD_MARGIN = 200;
@@ -114,11 +115,12 @@ function App() {
         </div>
         <div>
           {blocks.map((elt) => (
-            <div key={elt.id}>
-              <h2 className={fonts.rhm}>{elt.title}</h2>
-              {elt.content && <p>{elt.content}</p>}
-              {elt.image && <img src={elt.image.square.url}></img>}
-            </div>
+            // <div key={elt.id}>
+            //   <h2 className={fonts.rhm}>{elt.title}</h2>
+            //   {elt.content && <p>{elt.content}</p>}
+            //   {elt.image && <img src={elt.image.square.url}></img>}
+            // </div>
+            <Block key={elt.id} content={elt} />
           ))}
         </div>
       </div>
