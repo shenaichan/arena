@@ -2,12 +2,13 @@ import { Tldraw } from "tldraw";
 import "tldraw/tldraw.css";
 
 import fonts from "./fonts.module.css";
+import base from "./base.module.css";
 
 import { useState } from "react";
 
 import { Content, Contents } from "./types";
 
-// import classnames from "classnames";
+import classnames from "classnames";
 
 const PAGE_LENGTH = 20;
 const LOAD_MARGIN = 200;
@@ -85,15 +86,7 @@ function App() {
   };
 
   return (
-    <div
-      style={{
-        height: "100vh",
-        width: "100vw",
-        display: "grid",
-        gridTemplateColumns: "2fr 1fr",
-      }}
-      className={fonts.ah}
-    >
+    <div className={classnames(base.root, fonts.ah)}>
       <Tldraw persistenceKey="foobar" />
 
       <div style={{ padding: "20px", overflow: "scroll" }} onScroll={fetchMore}>
