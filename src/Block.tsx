@@ -36,10 +36,36 @@ function Block({ content }: { content: Content }) {
           <img src={content.image.square.url}></img>
         </div>
       );
+    } else if (content.class === "Media") {
+      // spotify and youtube and stuff
+      if (!content.image) {
+        console.error("Media class should have image field");
+        return;
+      }
+      return <img src={content.image.square.url}></img>;
+    } else if (content.class === "Attachment") {
+      // pdfs and stuff
+      if (!content.image) {
+        console.error("Attachment class should have image field");
+        return;
+      }
+      return <img src={content.image.square.url}></img>;
+    } else {
+      // nothing i think
+      console.log(content.class);
     }
   };
   return (
-    <div>
+    <div
+      style={{
+        margin: "10px",
+        padding: "10px",
+        width: "auto",
+        aspectRatio: "1",
+        border: "1px solid black",
+        overflow: "hidden",
+      }}
+    >
       <p className={fonts.rhm}>{content.title}</p>
       {body()}
     </div>
